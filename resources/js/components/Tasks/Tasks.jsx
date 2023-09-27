@@ -1,18 +1,37 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
+import useCatigories from "../../custom/useCatigories";
 
 export default function Tasks() {
 
-    const [tasks, SeTasks] = useState([]);
+    const [tasks, SetTasks] = useState([]);
+    const [page, SetPage] = useState(1);
+    const [catigories, SetCatigories] = useState([])
 
     useEffect(() => {
+        if (!catigories.length) {
+            fetchCatigories();
+        }
         fetchTask();
-    }, [])
+    }, [page])
+
+
+    // function pour appel custom hooke use Catigories
+    const fetchCatigories = async () => {
+
+        const fetchedcat = await useCatigories();
+        SetCatigories(fetchedcat);
+    }
+
+    const fetchPrevNextTasks = (link) => {
+        const url = new URL(link);
+        SetPage(url.searchParams.get('page'));
+    }
 
     const fetchTask = async () => {
         try {
-            const response = await axios.get('/api/tasks/');
-            SeTasks(response.data);
+            const response = await axios.get(`/api/tasks?page=${page}`);
+            SetTasks(response.data);
         } catch (error) {
             console.log(error);
         }
@@ -20,12 +39,30 @@ export default function Tasks() {
     }
     const checkIftask = (done) => (
         done ? (
-            <span class="badge bg-success p-2">termines</span>
+            <span className="badge bg-success p-2">termines</span>
 
         )
             : (
-                <span class="badge bg-danger p-2">en attente</span>
+                <span className="badge bg-danger p-2">en attente</span>
             )
+    )
+
+    const renderPagination = () => (
+        <ul className="pagination">
+            {
+                tasks.links?.map((link, index) => (
+                    <li className={`page-item  ${link.active ? " active" : ""}`} key={index}>
+                        <a
+                            style={{ cursor: "pointer" }}
+                            className="page-link"
+                            onClick={() => fetchPrevNextTasks(link.url)}
+                        >
+                            {link.label.replace('&laquo;', '').replace('&raquo;', '')}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
 
     )
 
@@ -75,6 +112,29 @@ export default function Tasks() {
                                     }
                                 </tbody>
                             </table>
+
+                            <div className="my-4 d-flex justify-content-between">
+                                <div>
+                                    Showing {tasks.from || 0} to {tasks.to || 0}
+                                    from {tasks.total} results
+                                </div>
+                                <div>
+                                    {renderPagination()}
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div className="col-md-3">
+                    <div className="card">
+                        <div className="card-header text-center bg-white">
+                            <h5 className="mt-2"> Fillter by Catigorise</h5>
+                        </div>
+                        <div className="card-body">
+
                         </div>
                     </div>
 

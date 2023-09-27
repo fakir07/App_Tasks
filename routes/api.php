@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TasksController;
+use App\Http\Controllers\CategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('tasks', [TasksController::class, 'index']);
+Route::get('categories', [CategoriesController::class, 'index']);
 Route::post('tasks', [TasksController::class, 'store']);
 Route::get('tasks/{id}', [TasksController::class, 'show']);
 Route::put('tasks/{id}', [TasksController::class, 'update']);
