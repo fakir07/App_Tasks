@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const useCatigories = async () => {
+const useCategories = async () => {
 
     try {
         const response = await axios.get('/api/categories');
@@ -13,4 +13,4 @@ const useCatigories = async () => {
     }
 }
 
-export default useCatigories;
+export default useCategories;

@@ -1,26 +1,27 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import useCatigories from "../../custom/useCatigories";
+import useCategories from "../../custom/useCategories";
 
 export default function Tasks() {
 
     const [tasks, SetTasks] = useState([]);
     const [page, SetPage] = useState(1);
-    const [catigories, SetCatigories] = useState([])
+    const [categories, SetCategories] = useState([])
+    const [catId, SetCatId] = useState(null)
 
     useEffect(() => {
-        if (!catigories.length) {
-            fetchCatigories();
+        if (!categories.length) {
+            fetchcategories();
         }
         fetchTask();
-    }, [page])
+    }, [page, catId])
 
 
-    // function pour appel custom hooke use Catigories
-    const fetchCatigories = async () => {
+    // function pour appel custom hooke use categories
+    const fetchcategories = async () => {
 
-        const fetchedcat = await useCatigories();
-        SetCatigories(fetchedcat);
+        const fetchedcat = await useCategories();
+        SetCategories(fetchedcat);
     }
 
     const fetchPrevNextTasks = (link) => {
@@ -30,8 +31,14 @@ export default function Tasks() {
 
     const fetchTask = async () => {
         try {
-            const response = await axios.get(`/api/tasks?page=${page}`);
-            SetTasks(response.data);
+            if (!catId){
+                const response = await axios.get(`/api/categorie/${catId}/tasks?page=${page}`);
+                SetTasks(response.data);
+            } 
+            if(catId === null) {
+                const response = await axios.get(`/api/tasks?page=${page}`);
+                SetTasks(response.data);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -79,7 +86,7 @@ export default function Tasks() {
                                         <th>ID</th>
                                         <th>Title</th>
                                         <th>Description</th>
-                                        <th>Catigories</th>
+                                        <th>categories</th>
                                         <th>Satuts</th>
                                         <th>date </th>
                                         <th>Action</th>
@@ -134,6 +141,35 @@ export default function Tasks() {
                             <h5 className="mt-2"> Fillter by Catigorise</h5>
                         </div>
                         <div className="card-body">
+                            <div className="form-check">
+                                <input type="radio" name="categorie" id="categorie" className="form-check-input"
+
+                                    onClick={() => {
+                                        fetchTask();
+                                        SetPage(1);
+                                        SetCatId(null)
+                                    }}
+                                />
+                                <label htmlFor="categorie" className="form-check-label">Tous</label>
+                            </div>
+                            {
+                                categories.map(categorie => (
+                                    <div className="form-check">
+                                        <input type="radio" name="categorie" className="form-check-input"
+
+                                            onClick={() => {
+                                                fetchTask();
+                                                SetPage(1);
+                                                SetCatId(categorie.id)
+                                            }}
+                                            value={categorie.name}
+                                            id={categorie.id}
+                                        />
+                                        <label htmlFor={categorie.id} className="form-check-label">{categorie.name}</label>
+                                    </div>
+                                ))
+
+                            }
 
                         </div>
                     </div>
