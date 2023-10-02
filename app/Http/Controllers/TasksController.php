@@ -87,9 +87,9 @@ class TasksController extends Controller
     }
 
 
-    public function destroy(Tasks $tasks)
+    public function destroy(Tasks $tasks, $id)
     {
-
+        $tasks = Tasks::where('id', $id)->first();
         $tasks->delete();
         return ['message' => 'your tasks hase ben removed'];
     }
@@ -118,7 +118,7 @@ class TasksController extends Controller
             ->where('title', 'like', '%' . $term . '%')
             ->orWhere('description', 'like', '%' . $term . '%')
             ->orWhere('id', 'like', '%' . $term . '%')
-            ->paginate(10);
+            ->paginate(5);
         return $tasks;
     }
 }

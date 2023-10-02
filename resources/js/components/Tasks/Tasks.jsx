@@ -1,6 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import useCategories from "../../custom/useCategories";
+import { useDebounce } from "use-debounce";
+import Swal from "sweetalert2";
+import { Await } from "react-router-dom";
 
 export default function Tasks() {
 
@@ -9,13 +12,15 @@ export default function Tasks() {
     const [categories, SetCategories] = useState([])
     const [catId, SetCatId] = useState(null)
     const [orderby, SetOrderby] = useState(null)
+    const [rechercher, Setrechercher] = useState(null)
+    const rechdebounce = useDebounce(rechercher, 1000);
 
     useEffect(() => {
         if (!categories.length) {
             fetchcategories();
         }
         fetchTask();
-    }, [page, catId, orderby])
+    }, [page, catId, orderby, rechdebounce[0]])
 
 
     // function pour appel custom hooke use categories
@@ -43,6 +48,10 @@ export default function Tasks() {
                 console.log(response.data)
             } else if (orderby && orderby.column === 'title') {
                 const response = await axios.get(`/api/orderbyTitle/${orderby.direction}/tasks?page=${page}`);
+                SetTasks(response.data);
+                console.log(response.data)
+            } else if (rechdebounce[0]) {
+                const response = await axios.get(`/api/rechercher/${rechdebounce[0]}/tasks?page=${page}`);
                 SetTasks(response.data);
                 console.log(response.data)
             } else {
@@ -87,9 +96,58 @@ export default function Tasks() {
     )
 
 
+    const deleTasks = async (taskId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+
+                try {
+                    const response = await axios.delete(`api/tasks/${taskId}`);
+                    Swal.fire(
+                        'Deleted!',
+                        response.data.message,
+                        'success'
+                    )
+                    fetchTask()
+                } catch (error) {
+                    console.log(error)
+
+                }
+            }
+        });
+    }
+
+
+
     return (
         <>
             <div className="row my-5">
+
+                <div className="row my-2">
+                    <div className="col-md-4">
+                        <div className="form-group">
+                            <input type="text" className="form-control " placeholder="Rechercher"
+                                value={rechercher}
+                                onChange={(event) => {
+                                    SetCatId(null);
+                                    SetOrderby(null);
+                                    SetPage(1);
+                                    Setrechercher(event.target.value);
+
+                                }}
+
+                            />
+                        </div>
+                    </div>
+
+                </div>
                 <div className="col-md-9 ">
                     <div className="card">
                         <div className="card-body">
@@ -118,8 +176,11 @@ export default function Tasks() {
                                                 }</td>
                                                 <td> {task.created_at}</td>
                                                 <td>
-                                                    <span className="btn btn-warning mx-2"> <i class="fa-solid fa-pen-to-square"></i></span>
-                                                    <span className="btn btn-danger "> <i class="fa-solid fa-trash-can"></i></span>
+                                                    <button className="btn btn-warning mx-2"
+                                                    > <i class="fa-solid fa-pen-to-square"></i></button>
+                                                    <button className="btn btn-danger "
+                                                        onClick={() => deleTasks(task.id)}
+                                                    > <i class="fa-solid fa-trash-can"></i></button>
 
                                                 </td>
 
@@ -158,7 +219,7 @@ export default function Tasks() {
                                 <input type="radio" name="categorie" id="categorie" className="form-check-input"
 
                                     onClick={() => {
-                                        fetchTask();
+                                        // fetchTask();
                                         SetPage(1);
                                         SetCatId(null)
                                         SetOrderby(null)
