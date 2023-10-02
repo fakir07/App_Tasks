@@ -96,7 +96,8 @@ class TasksController extends Controller
 
     public function getByCatigories(Categories $categories)
     {
-        return $categories->tasks()->with('categories')->paginate(10);
+        $tasks = $categories->tasks()->with("categories")->paginate(3);
+        return $tasks;
     }
 
     public  function getTasksOrderBy($column, $direction)

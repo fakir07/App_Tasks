@@ -26,6 +26,7 @@ Route::post('tasks', [TasksController::class, 'store']);
 Route::get('tasks/{id}', [TasksController::class, 'show']);
 Route::put('tasks/{id}', [TasksController::class, 'update']);
 Route::delete('tasks', [TasksController::class, 'destroy']);
-Route::get('categorie/{categories}/id', [TasksController::class, 'getByCatigories']);
+Route::get('categories/{categories}/tasks', [TasksController::class, 'getByCatigories']);
+// Route::get('asq/{categories}/id', [TasksController::class, 'getByCatigories']);
 Route::get('search/{term}/id', [TasksController::class, 'getTasksByterm']);
 Route::get('orderBy/{column}{direction}/id', [TasksController::class, 'getTasksOrderBy']);

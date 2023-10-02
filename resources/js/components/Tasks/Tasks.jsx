@@ -30,20 +30,25 @@ export default function Tasks() {
     }
 
     const fetchTask = async () => {
+
         try {
-            if (!catId){
-                const response = await axios.get(`/api/categorie/${catId}/tasks?page=${page}`);
+            if (catId) {
+                const response = await axios.get(`/api/categories/${catId}/tasks?page=${page}`);
+                // const response = await axios.get(`/api/categories/${catId}/tasks`);
                 SetTasks(response.data);
-            } 
-            if(catId === null) {
+                console.log(response.data)
+            } else {
                 const response = await axios.get(`/api/tasks?page=${page}`);
                 SetTasks(response.data);
+                console.log(response.data)
+
             }
         } catch (error) {
             console.log(error);
         }
 
     }
+
     const checkIftask = (done) => (
         done ? (
             <span className="badge bg-success p-2">termines</span>
@@ -149,20 +154,22 @@ export default function Tasks() {
                                         SetPage(1);
                                         SetCatId(null)
                                     }}
+
+                                    checked={catId === null ? true : false}
                                 />
                                 <label htmlFor="categorie" className="form-check-label">Tous</label>
                             </div>
                             {
                                 categories.map(categorie => (
-                                    <div className="form-check">
+                                    <div className="form-check" key={categorie.id}>
                                         <input type="radio" name="categorie" className="form-check-input"
 
-                                            onClick={() => {
+                                            onClick={(event) => {
                                                 fetchTask();
                                                 SetPage(1);
-                                                SetCatId(categorie.id)
+                                                SetCatId(event.target.value);
                                             }}
-                                            value={categorie.name}
+                                            value={categorie.id}
                                             id={categorie.id}
                                         />
                                         <label htmlFor={categorie.id} className="form-check-label">{categorie.name}</label>

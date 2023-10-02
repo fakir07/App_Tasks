@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Tasks;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Console\View\Components\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Categories extends Model
@@ -17,5 +16,6 @@ class Categories extends Model
     {
         // return $this->hasMany('App\Models\Tasks');
         return $this->hasMany('App\Models\Tasks', 'catigorie_id');
+        // return $this->hasMany(Tasks::class);
     }
 }
