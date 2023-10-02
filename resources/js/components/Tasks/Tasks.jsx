@@ -8,13 +8,14 @@ export default function Tasks() {
     const [page, SetPage] = useState(1);
     const [categories, SetCategories] = useState([])
     const [catId, SetCatId] = useState(null)
+    const [orderby, SetOrderby] = useState(null)
 
     useEffect(() => {
         if (!categories.length) {
             fetchcategories();
         }
         fetchTask();
-    }, [page, catId])
+    }, [page, catId, orderby])
 
 
     // function pour appel custom hooke use categories
@@ -34,7 +35,14 @@ export default function Tasks() {
         try {
             if (catId) {
                 const response = await axios.get(`/api/categories/${catId}/tasks?page=${page}`);
-                // const response = await axios.get(`/api/categories/${catId}/tasks`);
+                SetTasks(response.data);
+                console.log(response.data)
+            } else if (orderby && orderby.column === 'id') {
+                const response = await axios.get(`/api/orderbyId/${orderby.direction}/tasks?page=${page}`);
+                SetTasks(response.data);
+                console.log(response.data)
+            } else if (orderby && orderby.column === 'title') {
+                const response = await axios.get(`/api/orderbyTitle/${orderby.direction}/tasks?page=${page}`);
                 SetTasks(response.data);
                 console.log(response.data)
             } else {
@@ -153,6 +161,7 @@ export default function Tasks() {
                                         fetchTask();
                                         SetPage(1);
                                         SetCatId(null)
+                                        SetOrderby(null)
                                     }}
 
                                     checked={catId === null ? true : false}
@@ -167,6 +176,7 @@ export default function Tasks() {
                                             onClick={(event) => {
                                                 fetchTask();
                                                 SetPage(1);
+                                                SetOrderby(null)
                                                 SetCatId(event.target.value);
                                             }}
                                             value={categorie.id}
@@ -178,6 +188,93 @@ export default function Tasks() {
 
                             }
 
+                        </div>
+                    </div>
+
+                    <div className="card mt-2">
+                        <div className="card-header text-center bg-white">
+                            <h5 className="mt-2">
+                                Order By
+                            </h5>
+                        </div>
+                        <div className="card-body">
+                            <div>
+                                <h6>ID</h6>
+                                <div className="form-check">
+                                    <input type="radio" name="id" className="form-check-input"
+                                        value='asc'
+                                        onClick={(event) => {
+                                            SetCatId(null);
+                                            SetPage(1);
+                                            SetOrderby({
+                                                column: 'id',
+                                                direction: event.target.value
+                                            });
+                                        }}
+                                        checked={orderby && orderby.column === 'id' && orderby.direction === "asc" ? true : false}
+
+                                    />
+                                    <label htmlFor="id" className="form-check-label">
+                                        <i class="fa-solid fa-up-long"></i>
+                                    </label>
+                                </div>
+                                <div className="form-check">
+                                    <input type="radio" name="id" className="form-check-input"
+                                        value='desc'
+                                        onClick={(event) => {
+                                            SetCatId(null);
+                                            SetPage(1);
+                                            SetOrderby({
+                                                column: 'id',
+                                                direction: event.target.value
+                                            });
+                                        }}
+                                        checked={orderby && orderby.column === 'id' && orderby.direction === "desc" ? true : false}
+                                    />
+                                    <label htmlFor="" className="form-check-label">
+                                        <i class="fa-solid fa-down-long"></i>
+                                    </label>
+                                </div>
+                            </div>
+                            <hr />
+                            <div>
+                                <h6>Title</h6>
+                                <div className="form-check">
+                                    <input type="radio" name="title" className="form-check-input"
+                                        value='asc'
+                                        onClick={(event) => {
+                                            SetCatId(null);
+                                            SetPage(1);
+                                            SetOrderby({
+                                                column: 'title',
+                                                direction: event.target.value
+                                            });
+                                        }}
+                                        checked={orderby && orderby.column === 'title' && orderby.direction === "asc" ? true : false}
+
+                                    />
+                                    <label htmlFor="title" className="form-check-label">
+                                        A to Z
+                                    </label>
+                                </div>
+                                <div className="form-check">
+                                    <input type="radio" name="title" className="form-check-input"
+                                        value='desc'
+                                        onClick={(event) => {
+                                            SetCatId(null);
+                                            SetPage(1);
+                                            SetOrderby({
+                                                column: 'title',
+                                                direction: event.target.value
+                                            });
+                                        }}
+                                        checked={orderby && orderby.column === 'title' && orderby.direction === "desc" ? true : false}
+                                    />
+                                    <label htmlFor="title" className="form-check-label">
+                                        Z to A
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

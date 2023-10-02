@@ -100,9 +100,16 @@ class TasksController extends Controller
         return $tasks;
     }
 
-    public  function getTasksOrderBy($column, $direction)
+
+    public  function getTasksOrderById($direction)
     {
-        return Tasks::with('categories')->orderBy($column, $direction)->paginate(10);
+        $tasks = Tasks::with('categories')->orderBy('id', $direction)->paginate(5);
+        return $tasks;
+    }
+    public  function getTasksOrderByTitle($direction)
+    {
+        $tasks = Tasks::with('categories')->orderBy('title', $direction)->paginate(5);
+        return $tasks;
     }
 
     public function getTasksByterm($term)
