@@ -15,12 +15,10 @@ class CategoriesController extends Controller
         return Categories::has('tasks')->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function getAllcategories()
     {
-        //
+        $categories = Categories::all();
+        return $categories;
     }
 
     /**

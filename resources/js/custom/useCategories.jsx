@@ -3,7 +3,7 @@ import axios from "axios"
 const useCategories = async () => {
 
     try {
-        const response = await axios.get('/api/categories');
+        const response = await axios.get('/api/categorieshasTasks');
         return response.data;
     } catch (error) {
         console.log(error)
