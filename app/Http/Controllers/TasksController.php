@@ -35,9 +35,15 @@ class TasksController extends Controller
             'title' => 'required|min:5',
             'description' => 'required|max:200',
             'catigorie_id' => 'required',
+        ], [
+            'title.required' => 'title is required',
+            'description.required' => 'description is required',
+            'catigorie_id.required' => 'catigorie is required'
+
         ]);
         if ($validate->fails()) {
-            return back()->withErrors($validate->errors())->withInput();
+            // return back()->withErrors($validate->errors());
+            return response()->json(['errors' => $validate->errors()], 422);
         }
 
         $tasks = new Tasks();

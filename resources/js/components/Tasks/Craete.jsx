@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import useCategories from "../../custom/useCategories";
-
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 
 export default function Craete() {
     const [title, Settitle] = useState("");
@@ -11,10 +11,45 @@ export default function Craete() {
     const [status, Setstatus] = useState(false);
     const navigate = useNavigate();
     const [categories, Setcategories] = useState([]);
+    const [errors, setErrors] = useState({});
+    const [laoding, Setloading] = useState(false);
 
     useEffect(() => {
         getCategories();
     }, [])
+
+
+    const creationTasks = async (e) => {
+        Setloading(true);
+        e.preventDefault();
+        const tasks = {
+            title,
+            description,
+            catigorie_id,
+        }
+        try {
+            await axios.post(`api/tasks`, tasks);
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "tasks avec sauvgarder",
+                showConfirmButton: false,
+                timer: 4000
+            });
+            Setloading(false)
+            navigate('/');
+
+        } catch (error) {
+            setErrors(error.response.data.errors);
+            Setloading(false)
+        }
+    }
+
+
+    // const renderErrors = () => {
+    //     errors.?
+
+    // }
 
 
 
@@ -29,36 +64,33 @@ export default function Craete() {
         }
     }
 
-    /// function pour save data
-
-    const creationTasks = (e) => {
-        e.reventDefault();
-        const tasks = {
-            title,
-            description,
-            catigorie_id,
-        }
-
-        try {
-            const respoonce = await axios.post(`api/tasks`,task)
-            
-        } catch (error) {
-            
-        }
-    }
 
 
 
     return (
         <div className="container mt-5">
             <div className="col-md-12 mx-a">
+                {Object.keys(errors).length > 1 ?
+                    <div class="alert alert-danger" role="alert">
+                        <strong>erros</strong>
+                        <ul>
+                            {Object.keys(errors).map((key) => (
+                                errors[key].map((errorMessage, index) => (
+                                    <li key={index}>{errorMessage}</li>
+                                ))
+                            ))}
+                        </ul>
+                    </div>
+                    : ""
+                }
+
                 <div className="card">
                     <div className="card-header bg-white">
                         <div className="text border-bottom mt-2">
                             <h3> Creations les Tasks</h3>
                         </div>
                         <div className="card-body">
-                            <form className="mt-2">
+                            <form className="mt-2" onSubmit={creationTasks}>
                                 <div className="mb-3">
                                     <label htmlFor="title" className="form-label">Title</label>
                                     <input type="text" className="form-control" id="title" value={title}
@@ -82,17 +114,19 @@ export default function Craete() {
                                                 <option key={categorie.id} value={categorie.id}>{categorie.name}</option>
                                             ))
                                         }
-
-
                                     </select>
                                 </div>
-                                <div className="mb-3 form-check">
-                                    <input type="checkbox" className="form-check-input" id="status" />
-                                    <label className="form-check-label" htmlFor="status">Status</label>
-                                </div>
-                                <div className="d-grid gap-2">
-                                    <button type="submit" className="btn btn-danger mt-2">Creation</button>
-                                </div>
+                                {
+                                    laoding ?
+                                        <div className="spinner-border" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div> :
+                                        <div className="d-grid gap-2">
+                                            <button type="submit" className="btn btn-danger mt-2">Creation</button>
+                                        </div>
+                                }
+
+
 
                             </form>
 
