@@ -55,8 +55,9 @@ class TasksController extends Controller
     }
 
 
-    public function show(Tasks $tasks)
+    public function show(Tasks $tasks, $id)
     {
+        $tasks = Tasks::where('id', $id)->first();
         return $tasks;
     }
 
@@ -75,14 +76,15 @@ class TasksController extends Controller
         // $tasks->catigorie_id = $request->catigorie_id;
         // $tasks->done = $request->done;
         // $tasks->save();
-        $validate = Validator::make($request->all(), [
-            'title' => 'required|min:5',
-            'description' => 'required|max:200',
-            'catigorie_id' => 'required',
-        ]);
-        if ($validate->fails()) {
-            return back()->withErrors($validate->errors())->withInput();
-        }
+        // $validate = Validator::make($request->all(), [
+        //     'title' => 'required|min:5',
+        //     'description' => 'required|max:200',
+        //     'catigorie_id' => 'required',
+        // ]);
+        // if ($validate->fails()) {
+        //     return back()->withErrors($validate->errors())->withInput();
+        // }
+
         $tasks->update([
             'title' => $request->title,
             'description' => $request->description,

@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('app')).render(
                 <Routes>
                     <Route path='/' exact element={<Tasks />} />
                     <Route path='/craete' exact element={<Craete />} />
-                    <Route path='/edit/:taskId' exact element={<Edit />} />
+                    <Route path="/edit/:taskId" exact element={<Edit />} />
                 </Routes>
 
             </BrowserRouter>

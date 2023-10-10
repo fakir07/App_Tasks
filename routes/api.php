@@ -24,7 +24,7 @@ Route::get('tasks', [TasksController::class, 'index']);
 Route::get('categorieshasTasks', [CategoriesController::class, 'index']);
 Route::get('categoriesAll', [CategoriesController::class, 'getAllcategories']);
 Route::post('tasks', [TasksController::class, 'store']);
-Route::get('tasks/{tasks}', [TasksController::class, 'show']);
+Route::get('tasks/{id}', [TasksController::class, 'show']);
 Route::put('tasks/{tasks}', [TasksController::class, 'update']);
 Route::delete('tasks/{id}', [TasksController::class, 'destroy']);
 Route::get('categories/{categories}/tasks', [TasksController::class, 'getByCatigories']);

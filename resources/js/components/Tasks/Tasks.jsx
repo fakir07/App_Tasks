@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import useCategories from "../../custom/useCategories";
 import { useDebounce } from "use-debounce";
 import Swal from "sweetalert2";
-import { Await } from "react-router-dom";
+import { Await, Link } from "react-router-dom";
 
 export default function Tasks() {
 
@@ -175,9 +175,9 @@ export default function Tasks() {
                                                     checkIftask(task.done)
                                                 }</td>
                                                 <td> {task.created_at}</td>
-                                                <td>
-                                                    <button className="btn btn-warning mx-2"
-                                                    > <i class="fa-solid fa-pen-to-square"></i></button>
+                                                <td className="d-flex flex-row ">
+                                                    <Link className="btn btn-warning mx-2 " to={`edit/${task.id}`}
+                                                    > <i class="fa-solid fa-pen-to-square"></i></Link>
                                                     <button className="btn btn-danger "
                                                         onClick={() => deleTasks(task.id)}
                                                     > <i class="fa-solid fa-trash-can"></i></button>
